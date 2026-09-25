@@ -1,16 +1,32 @@
 html {
+    /* Mobile-first card scale: compact on phones, larger on desktop */
     /* Do not use percentages for this value... If you do, the size of the parent container would be the orginal size before applying the negative margin */
-    --negCardMarginHor: -2rem; 
-    --negCardMarginVer: -2rem; 
+    --negCardMarginHor: -1.25rem;
+    --negCardMarginVer: -1.75rem;
 
-    --hor-max-height: 10rem;
-    --ver-max-width: 10rem;
+    --hor-max-height: 5.5rem;
+    --ver-max-width: 4.5rem;
 
-    --deck-max-width: 8rem;
+    --deck-max-width: 4.5rem;
 
-    /* ------------------------------------ */
+    /* Mobile-first vertical rhythm: opponents strip / table / thumb-zone hand */
+    --section-middle-height: 42%;
+    --section-top-height: 16%;
+    --section-bottom-height: 42%;
+}
 
-    --section-middle-height: 57%;
-    --section-top-height: 20%;
-    --section-bottom-height: 23%;
+@media (min-width: 768px) {
+    html {
+        --negCardMarginHor: -2rem;
+        --negCardMarginVer: -2rem;
+
+        --hor-max-height: 10rem;
+        --ver-max-width: 10rem;
+
+        --deck-max-width: 8rem;
+
+        --section-middle-height: 57%;
+        --section-top-height: 20%;
+        --section-bottom-height: 23%;
+    }
 }

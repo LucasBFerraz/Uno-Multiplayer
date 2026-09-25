@@ -9,29 +9,54 @@ font-family: 'Montserrat', sans-serif;
 
     --chooseColBlockSize: 65px;
     --chooseColBlockDefaultPos: 10%;
+    --tap-min: 48px;
+    --color-focus: #7DD3FC;
 }
 a {
     text-decoration: none;
     color: inherit;
 }
+html {
+    -webkit-text-size-adjust: 100%;
+}
 body {
     background-color: #2E2E2E;
     font-family: 'Montserrat', sans-serif;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
 }
 
 main {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
 
-    height: 100vh;
+    min-height: 100vh;
+    min-height: 100dvh;
 }
 
 .main {
-    background-color: #525464;    
-    height: 98%;
-    width: 98%;
+    background-color: #525464;
+    height: 100dvh;
+    width: 100%;
+    max-width: 1100px;
     position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+@media (min-width: 768px) {
+    main {
+        align-items: center;
+        padding: 1vh 1vw;
+    }
+    .main {
+        height: 98vh;
+        height: 98dvh;
+        width: 98%;
+        border-radius: 12px;
+    }
 }
 
 /* 
@@ -50,19 +75,44 @@ section.up, section.middle, section.down {
 section.up {
     width: 100%;
     height: var(--section-top-height);
+    flex-shrink: 0;
 
-    padding-top: 1rem;
-    padding-left: 10%;
-    padding-right: 10%;
+    padding-top: calc(0.5rem + env(safe-area-inset-top, 0px));
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    gap: 0.5rem;
+    /* Mobile: opponents become a horizontal scroll strip */
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+section.up::-webkit-scrollbar {
+    display: none;
 }
 
 section.down {
     width: 100%;
     height: var(--section-bottom-height);
+    flex-shrink: 0;
     
-    padding-bottom: 1rem;
-    padding-left: 10%;
-    padding-right: 10%;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    margin-top: auto;
+}
+@media (min-width: 768px) {
+    section.up, section.down {
+        padding-left: 10%;
+        padding-right: 10%;
+    }
+    section.up {
+        padding-top: 1rem;
+        overflow: visible;
+    }
+    section.down {
+        padding-bottom: 1rem;
+    }
 }
 
 /* 
@@ -76,25 +126,50 @@ section.middle {
 
     width: 100%;
     height: var(--section-middle-height);
-    /* padding: 0rem 3rem; */
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0 0.25rem;
 
 }
 .middleLeft, .middleRight {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: space-around;
+    justify-content: flex-start;
+    gap: 0.5rem;
 
-    max-width: 30%;
+    max-width: 26%;
     height: 100%;
-    padding: 0rem 1rem;
+    min-height: 0;
+    padding: 0 0.25rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+}
+.middleLeft::-webkit-scrollbar, .middleRight::-webkit-scrollbar {
+    display: none;
+}
+@media (min-width: 768px) {
+    section.middle {
+        padding: 0;
+    }
+    .middleLeft, .middleRight {
+        flex-direction: column;
+        justify-content: space-around;
+        max-width: 30%;
+        padding: 0rem 1rem;
+        overflow: visible;
+    }
 }
 
 .middleMiddle {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 0.5rem;
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 /* 
@@ -105,17 +180,47 @@ section.middle {
 
 .wildChooseColor {
     display: none;
-    position: relative;
-    height: 14rem;
-    width: 14rem;
+    position: fixed;
+    left: 50%;
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
+    height: 12rem;
+    width: 12rem;
+    z-index: 60;
+    background: rgba(27, 38, 44, 0.96);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+@media (min-width: 768px) {
+    .wildChooseColor {
+        position: relative;
+        left: auto;
+        bottom: auto;
+        transform: none;
+        height: 14rem;
+        width: 14rem;
+        background: transparent;
+        box-shadow: none;
+    }
 }
 
 .wildChooseColor .block {
     position: absolute;
     width: var(--chooseColBlockSize, 65px);
     height: var(--chooseColBlockSize, 65px);
-    border-radius: 5px;
+    min-width: var(--tap-min);
+    min-height: var(--tap-min);
+    border-radius: 12px;
     transform: rotate(45deg);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+.wildChooseColor .block:active {
+    transform: rotate(45deg) scale(0.92);
+}
+.wildChooseColor .block:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
 }
 .wildChooseColor .red {
     background: #EF5555;
@@ -177,14 +282,25 @@ section.middle {
 
 .middleMiddle h1 {
     color: #efefef;
-    font-size: 80px;
+    font-size: clamp(2rem, 10vw, 5rem);
     font-family: 'Merienda', cursive;
     display: none;
     margin: 0rem 0.5rem; 
 }
 
 .playerCtnHor p, .playerCtnVer p {
-    margin: 0.5rem 0.5rem;
+    margin: 0.25rem 0.5rem;
+    font-size: 14px;
+    max-width: 18ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+@media (min-width: 768px) {
+    .playerCtnHor p, .playerCtnVer p {
+        margin: 0.5rem 0.5rem;
+        font-size: 22px;
+    }
 }
 
 
@@ -192,7 +308,7 @@ section.middle {
     color: #efefef;
     font-weight: normal;
     font-family: 'Merienda', cursive;
-    font-size: 32px;
+    font-size: clamp(1.1rem, 4.5vw, 2rem);
     display: none;
 }
 
@@ -210,10 +326,48 @@ section.middle {
     /* animation: rotateCurrentCard var(--currentCardAnimationTime) linear 0s infinite normal; */
 }
 
+/* Mobile tap targets for deck / direction */
+.deckCard, .currentCard {
+    touch-action: manipulation;
+    cursor: pointer;
+    border-radius: 8px;
+}
+.deckCard:focus-visible, .currentCard:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+}
+.direction {
+    width: clamp(28px, 8vw, 56px);
+    height: auto;
+    flex-shrink: 0;
+}
+
 @keyframes rotateCurrentCard {
     0%    { transform: rotateZ(0deg); filter: grayscale(0%);  }
     10%    { transform: rotateZ(36deg); filter: grayscale(100%);  } 
     50%    { transform: rotateZ(180deg); filter: grayscale(100%);   }
     100%  { transform: rotateZ(360deg); filter: grayscale(0%);  }
+}
+
+/* Landscape phones: keep table usable */
+@media (max-height: 500px) and (orientation: landscape) {
+    section.up {
+        height: 22%;
+    }
+    section.middle {
+        height: 44%;
+    }
+    section.down {
+        height: 34%;
+    }
+}
+
+/* Reduced motion: pro-rules / quick-reference §7 */
+@media (prefers-reduced-motion: reduce) {
+    .currentCard, .deckCard,
+    .direction.clockwise, .direction.anticlockwise {
+        animation: none;
+        transition: none;
+    }
 }
 

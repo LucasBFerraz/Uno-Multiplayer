@@ -11,16 +11,19 @@
 .playerCtnHor {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    /* height: 90%; */
+    justify-content: flex-start;
+    gap: 0.5rem;
+    min-width: 0;
 }
 
 .playerCtnHor.up {
     flex-direction: column;
+    flex-shrink: 0;
 }
 
 .playerCtnHor.down {
     flex-direction: column;
+    align-items: stretch;
 }
 
 .cardCtnHor {
@@ -28,11 +31,45 @@
     flex-direction: row;
     align-items: center;
     height: 100%;
+    min-height: 0;
+    min-width: 0;
+    width: 100%;
+}
+/* Opponent strips: compact, no wrap */
+section.up .cardCtnHor {
+    justify-content: center;
+    max-width: 38vw;
+    overflow: hidden;
+}
+/* Self hand: thumb-zone horizontal scroll with snap */
+.player0 .cardCtnHor {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    padding: 0.5rem 0.25rem calc(0.5rem + env(safe-area-inset-bottom, 0px));
+    gap: 0;
+    scrollbar-width: thin;
+}
+.player0 .cardCtnHor img {
+    scroll-snap-align: center;
 }
 .cardCtnHor img {
     margin: 0 var(--negCardMarginHor);
     max-height: var(--hor-max-height);
-    transition: margin var(--CardHoverTransitionSpeed);
+    width: auto;
+    touch-action: manipulation;
+    transition: margin var(--CardHoverTransitionSpeed) ease, transform var(--CardHoverTransitionSpeed) ease;
+}
+/* Larger tap-friendly overlap on phones keeps cards visible */
+@media (max-width: 767px) {
+    .player0 .cardCtnHor img {
+        max-height: 6.5rem;
+    }
+    section.up .cardCtnHor img,
+    .player7 .cardCtnHor img {
+        max-height: 3.25rem;
+    }
 }
 
 .playerCtnHor.up .cardCtnHor img{
@@ -48,8 +85,22 @@
 }  */
 
 .player0 .cardCtnHor img:hover {
-    margin-right: 1rem;
-} 
+    margin-right: 0.25rem;
+}
+@media (hover: hover) and (min-width: 768px) {
+    .player0 .cardCtnHor img:hover {
+        margin-right: 1rem;
+        transform: translateY(-6px);
+    }
+}
+/* Touch press feedback: no layout shift, transform only */
+.player0 .cardCtnHor img:active {
+    transform: scale(0.96);
+}
+.player0 .cardCtnHor img:focus-visible {
+    outline: 3px solid #7DD3FC;
+    outline-offset: 2px;
+}
 
 
 /* The css :last-child has to be below :hover so that the last card does not get any extra margin when the user places the mouse on the last card.. It cancels out the effect of the :hover for the last-child */
@@ -70,8 +121,9 @@
 .playerCtnVer {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    /* height: 90%; */
+    justify-content: flex-start;
+    gap: 0.375rem;
+    flex-shrink: 0;
 }
 
 .playerCtnVer.left {
@@ -83,12 +135,30 @@
     flex-direction: column;
     /* flex-direction: row; */
 }
+@media (max-width: 767px) {
+    .playerCtnVer.left, .playerCtnVer.right {
+        flex-direction: column;
+    }
+}
 
 .cardCtnVer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 90%;
+    width: auto;
+}
+@media (max-width: 767px) {
+    .middleLeft .cardCtnVer, .middleRight .cardCtnVer {
+        flex-direction: row;
+    }
+    .middleLeft .cardCtnVer img, .middleRight .cardCtnVer img {
+        margin: 0 -1rem;
+        max-width: 3rem;
+        transform: none;
+    }
+    .playerCtnVer.left .cardCtnVer img {
+        transform: none;
+    }
 }
 .cardCtnVer img {
     margin: var(--negCardMarginVer) 0;
@@ -130,8 +200,16 @@
 
 .middleMiddle img {
     max-width: var(--deck-max-width);
+    width: clamp(3.5rem, 18vw, var(--deck-max-width));
+    height: auto;
     box-sizing: content-box;
-    margin: 0rem 1rem;
+    margin: 0rem 0.5rem;
+}
+@media (min-width: 768px) {
+    .middleMiddle img {
+        width: auto;
+        margin: 0rem 1rem;
+    }
 }
 
 
@@ -155,19 +233,48 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    gap: 0.5rem;
+    min-height: 0;
+    width: 100%;
+}
+
+.player0ExtraCtn .cardCtnHor {
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .endTurnBtn {
     display: none;
-    padding: 0.9rem 1.5rem;
-    margin-left: 0.6rem;
-    border-radius: 5rem;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0.875rem 1.25rem;
+    margin-left: 0;
+    border-radius: 999px;
     background: #00B453;
-    color: #efefef;
-    font-size: 20px;
-    cursor: default;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    flex-shrink: 0;
+    transition: background 0.15s ease, transform 0.15s ease;
 }
 .endTurnBtn:hover {
     background: #42DA88;
 
+}
+.endTurnBtn:active {
+    transform: scale(0.96);
+}
+.endTurnBtn:focus-visible {
+    outline: 3px solid #7DD3FC;
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cardCtnHor img, .cardCtnVer img, .endTurnBtn {
+        transition: none;
+    }
 }

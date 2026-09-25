@@ -7,13 +7,33 @@ font-family: 'Montserrat', sans-serif;
     padding: 0;
     box-sizing: border-box;
 }
+:root {
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --tap-min: 48px;
+    --radius-pill: 999px;
+    --color-primary: #3282B8;
+    --color-primary-hover: #58A6DB;
+    --color-primary-active: #246a97;
+    --color-surface: #1B262C;
+    --color-focus: #7DD3FC;
+}
 a {
     text-decoration: none;
     color: inherit;
 }
+html {
+    -webkit-text-size-adjust: 100%;
+}
 body {
     background-color: #2E2E2E;
     font-family: 'Montserrat', sans-serif;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -26,16 +46,23 @@ body {
 
 input[type=text] {
     width: 100%;
-    padding: 10px 14px;
+    min-height: var(--tap-min);
+    padding: 12px 14px;
     margin: 4px 0;
+    font-size: 16px; /* prevents iOS auto-zoom */
+    line-height: 1.5;
 
     border: 2px solid #bbb;
-    border-radius: 8px;
+    border-radius: 12px;
     outline: none;
-    transition: border 0.4s;
+    transition: border 0.15s ease;
 }
 input[type=text]:focus {
-    border: 2px solid #555;
+    border: 2px solid #7DD3FC;
+}
+input[type=text]:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
 }
 
 /*
@@ -49,36 +76,65 @@ main {
     align-items: center;
     justify-content: center;
 
-    height: 100vh;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: var(--space-4);
+    padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
 }
 
 .main {
-    background-color: #525464;    
-    height: 80%;
-    width: 80%;
+    background-color: #525464;
+    /* Mobile-first: full-bleed card, capped on desktop */
+    height: auto;
+    min-height: min(92dvh, 720px);
+    width: 100%;
+    max-width: 560px;
+    border-radius: 20px;
+    padding: var(--space-6) var(--space-4) calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+    position: relative;
+    overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .main {
+        width: 80%;
+        max-width: 860px;
+        min-height: 80vh;
+    }
 }
 
 .mainPageGroup {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: flex-start;
+    gap: var(--space-6);
 
-    height: 60%;
+    min-height: 60%;
 }
 
 .main .title {
     font-family: 'Merienda', cursive;
-    font-size: 100px;
+    font-size: clamp(3rem, 18vw, 6.25rem);
+    line-height: 1.1;
+    text-wrap: balance;
     color: #EFEFEF;
 }
 
 .header {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: center;
+    gap: var(--space-4);
     width: 100%;
+    text-align: center;
+}
+@media (min-width: 560px) {
+    .header {
+        flex-direction: row;
+        justify-content: space-evenly;
+    }
 }
 /*
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,8 +143,15 @@ main {
 */
 .logoContainer {
     position: relative;
-    height: 14rem;
-    width: 14rem;
+    height: 9rem;
+    width: 9rem;
+    flex-shrink: 0;
+}
+@media (min-width: 560px) {
+    .logoContainer {
+        height: 14rem;
+        width: 14rem;
+    }
 }
 
 .logoBlockCommon {
@@ -172,32 +235,54 @@ main {
 
 .buttonContainer {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    height: 6rem;
-    width: 28rem;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: var(--space-3);
+    width: 100%;
+    max-width: 22rem;
+    height: auto;
+}
+@media (min-width: 560px) {
+    .buttonContainer {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 28rem;
+    }
 }
 .button p {
     font-family: 'Montserrat', sans-serif;
-    font-size: 20px;
-    color: #efefef;
-    cursor: default;
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
 }
 
 .button {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem 1rem;
+    min-height: var(--tap-min);
+    padding: 0.875rem 1.5rem;
 
-    background: #3282B8;
-    border-radius: 30px;
-    transition: background 0.15s;
+    background: var(--color-primary);
+    border-radius: var(--radius-pill);
+    transition: background 0.15s ease, transform 0.15s ease;
+    cursor: pointer;
+    user-select: none;
 }
 
 .button:hover {
-    background: #58A6DB;
+    background: var(--color-primary-hover);
+}
+.button:active {
+    background: var(--color-primary-active);
+    transform: scale(0.97);
+}
+.button:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
 }
 
 /*
@@ -212,19 +297,37 @@ main {
 
     flex-direction: column;
     align-items: center;
-    /* justify-content: space-between; */
 
     left: 50%;
-    /* bottom: 12%; */
-    top: 60%;
-    min-height: 23rem;
-    min-width: 25rem;
+    top: 50%;
+    /* Mobile-first: bottom-sheet style, desktop: centered modal */
+    width: calc(100% - 2rem);
+    max-width: 26rem;
+    max-height: calc(92dvh - 2rem);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
 
     transform: translate(-50%, -50%);
+    border-radius: 16px;
+    z-index: 40;
 
     background: #1B262C;
     box-shadow: 0px 0px 5px 8px rgba(0, 0, 0, 0.25);
 
+}
+@media (max-width: 559px) {
+    .roomDialog {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        transform: none;
+        border-radius: 20px 20px 0 0;
+        max-height: 88dvh;
+    }
 }
 
 /*
@@ -252,17 +355,30 @@ main {
 }
 
 .roomDialog .roomHeader .roomCloseButton {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     background: #D31C1C;
     box-shadow: 0px 0px 3px 2px rgba(0, 0, 0, 0.25);
     margin: 0 0.5rem;
-    transition: background 0.15s
+    transition: background 0.15s ease, transform 0.15s ease;
+    cursor: pointer;
 }
 .roomDialog .roomHeader .roomCloseButton:hover {
     background: #FFAAAA;
+}
+.roomDialog .roomHeader .roomCloseButton:active {
+    transform: scale(0.92);
+}
+.roomDialog .roomHeader .roomCloseButton:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
 }
 /*
 ////////////////////////////////
@@ -285,13 +401,15 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: var(--tap-min);
 
     width: 45%; /* Note: this could be 100% as well so that it occupies the entire screen*/
     background: #0F4C75;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    padding: 0.6rem 15%;
+    padding: 0.6rem 2.2rem 0.6rem 0.75rem;
     margin: 0px 10px;
     margin-bottom: 10px;
+    border-radius: 10px;
 }
 
 .playersRow {
@@ -311,18 +429,31 @@ main {
 .roomDialogPlayer .roomDialogKickPlayerBtn {
     position: absolute;
     top: 50%;
-    right: 0.5rem;
-    width: 20px;
-    height: 6px;
+    right: 0.25rem;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
 
     transform: translateY(-50%);
-    cursor: default;
+    cursor: pointer;
+    border-radius: 8px;
 
     font-size: 60px;
-    background: #D31C1C;
-    transition: background 0.15s;
+    background: transparent;
+    transition: background 0.15s ease;
 }
-.roomDialogPlayer .roomDialogKickPlayerBtn:hover {
+/* visible minus bar inside the larger hit area */
+.roomDialogPlayer .roomDialogKickPlayerBtn::after {
+    content: "";
+    display: block;
+    width: 20px;
+    height: 6px;
+    margin: 19px auto;
+    background: #FF7A7A;
+    border-radius: 3px;
+}
+.roomDialogPlayer .roomDialogKickPlayerBtn:hover::after {
     background: #FFAAAA;
 }
 
@@ -338,25 +469,35 @@ main {
     align-items: center;
     justify-content: center;
 
-    bottom: 0.5rem;
-    padding: 1rem 1rem;
+    bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    padding: 0.875rem 1.5rem;
+    min-height: var(--tap-min);
 
     background: #3282B8;
-    border-radius: 30px;
+    border-radius: var(--radius-pill);
     min-width: 10rem;
+    cursor: pointer;
 
-    transition: background 0.15s;
+    transition: background 0.15s ease, transform 0.15s ease;
 }
 
 .roomStartGameButton p {
     padding: 0rem 0.5rem;
-    font-size: 22px;
-    cursor: default;
-    color: #efefef;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #fff;
 }
 
 .roomStartGameButton:hover {
     background: #58A6DB;
+}
+.roomStartGameButton:active {
+    transform: scale(0.97);
+}
+.roomStartGameButton:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
 }
 
 /*
@@ -371,27 +512,46 @@ main {
     flex-direction: column;
 
     align-items: center;
-    /* justify-content: space-between; */
 
     left: 50%;
-    top: 55%;
-    min-height: 7rem;
-    min-width: 15rem;
-    transform: translateX(-50%);
+    top: 50%;
+    width: calc(100% - 2rem);
+    max-width: 24rem;
+    max-height: calc(92dvh - 2rem);
+    overflow-y: auto;
+    transform: translate(-50%, -50%);
+    border-radius: 16px;
+    z-index: 50;
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
 
     background: #1B262C;
     box-shadow: 0px 0px 5px 8px rgba(0, 0, 0, 0.25);
 }
+@media (max-width: 559px) {
+    .enterNameDlg {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        transform: none;
+        border-radius: 20px 20px 0 0;
+        max-height: 92dvh;
+    }
+}
 
 .enterName_errorMsg {
     display: none;
-    font-size: 18px;
-    color: #FF7070;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #FF9A9A;
     text-align: left;
 
-    padding: 0.7rem 0;
+    padding: 0.7rem 1rem;
 
-    max-width: 25vw;    /* Prevent the error message from getting too too large*/
+    max-width: 100%;
+    overflow-wrap: anywhere;
 }
 /*
 ////////////////////////////////
@@ -416,18 +576,28 @@ main {
 }
 
 .enterName_CloseButton {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     border-radius: 50%;
     
     background: #D31C1C;
     box-shadow: 0px 0px 3px 2px rgba(0, 0, 0, 0.25);
     margin: 0 0.5rem;
-    transition: background 0.15s;
+    transition: background 0.15s ease, transform 0.15s ease;
+    cursor: pointer;
 }
 
 .enterName_CloseButton:hover {
     background: #FFAAAA;
+}
+.enterName_CloseButton:active {
+    transform: scale(0.92);
+}
+.enterName_CloseButton:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
 }
 
 /*
@@ -484,20 +654,41 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.6rem 1.5rem;
+    min-height: var(--tap-min);
+    min-width: 11rem;
+    padding: 0.75rem 1.75rem;
 
     background: #3282B8;
-    border-radius: 20px;
+    border-radius: var(--radius-pill);
 
     margin-bottom: 0.7rem;
-    transition: background 0.15s;
+    transition: background 0.15s ease, transform 0.15s ease;
+    cursor: pointer;
 }
 .enterName_enterBtn p {
-    font-size: 20px;
-    color: #efefef;
-    cursor: default;
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
 }
 
 .enterName_enterBtn:hover {
     background-color: #58A6DB;
+}
+.enterName_enterBtn:active {
+    transform: scale(0.97);
+}
+.enterName_enterBtn:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+}
+
+/* Motion + small-screen polish: pro-rules / quick-reference §7, §2 */
+@media (prefers-reduced-motion: reduce) {
+    .logoBlockCommon {
+        animation: none;
+    }
+    .button, .roomStartGameButton, .enterName_enterBtn {
+        transition: none;
+    }
 }
