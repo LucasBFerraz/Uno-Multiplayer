@@ -1,5 +1,5 @@
 .ionide/
 .DS_Store
-
+node_modules
 Log/
 Utils/
